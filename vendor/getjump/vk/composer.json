@@ -1,0 +1,24 @@
+{
+    "name": "getjump/vk",
+    "description": "Library for work with API Vk.com",
+    "keywords": ["php", "vk", "api", "library", "vkontakte"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name" : "Pavel S.",
+            "email" : "contact@getjump.me"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "6.*",
+        "php": ">=5.5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "getjump\\Vk\\": "src/getjump/Vk/"
+        }
+    }
+}

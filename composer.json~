@@ -1,0 +1,8 @@
+{
+  "packagist": true,
+  "require": {
+      
+        "tyrola/xmpphp": "v2.0",
+    "getjump/vk": "*"
+    }
+}

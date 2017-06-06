@@ -1,0 +1,6 @@
+{
+  "packagist": true,
+  "require": {
+    "getjump/vk": "*"
+    }
+}
