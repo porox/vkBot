@@ -9,14 +9,15 @@ $page  = preg_split("/\"/", $page);
 //var_dump($page);
 $accessToken = $page[3];
 
-//$auth = getjump\Vk\Auth::getInstance()->setSecret("hHbZxrka2uZ6jB1inYsH")->setAppId(2274003);
-//$token = $auth->startCallback();
-
 $vk = getjump\Vk\Core::getInstance()->apiVersion('5.65')->setToken($accessToken);
+
+
+
 $posts = $vk->request('wall.get', [
+	'owner_id' =>'',
 	'domain' => "flatfeeder",
-	'offset' => 13,
-	'count'  => 50
+	'offset' => 0,
+	'count'  => 40
 ])->getResponse();
 $parseAttach = function($attachments){
 	$result ="";
@@ -34,47 +35,40 @@ $parseAttach = function($attachments){
 };
 $result = null;
 $count = 1;
+
 foreach($posts as $post)
 {
 	
-	
-	$tmp = $vk->request('wall.post', [
-		'owner_id' => '-34915724',
-		'friends_only' => 0,
-		'from_group'  => 0,
-		'message' => $post->text,
-		'attachments' => isset($post->attachments) ? $parseAttach($post->attachments) : "",
-		'services' => "",
-		'signed' => 0,
-		'publish_date' => "",
-		'lat' => '',
-		'long' => '',
-		'place_id' => '',
-		'post_id' =>'',
-		'guid' => '',
-		'mark_as_ads' => '',
-		'ads_promoted_stealth' => '',
-	])->toJs();
-	if (is_null($result))
+	try
 	{
-	 	$result = $tmp;
+		$tmp = $vk->request('wall.post', [
+			'owner_id'             => '-34915724',
+			'friends_only'         => 0,
+			'from_group'           => 1,
+			'message'              => $post->text,
+			'attachments'          => isset($post->attachments) ? $parseAttach($post->attachments) : "",
+			'services'             => "",
+			'signed'               => 0,
+			'publish_date'         => "",
+			'lat'                  => '',
+			'long'                 => '',
+			'place_id'             => '',
+			'post_id'              => '',
+			'guid'                 => '',
+			'mark_as_ads'          => '',
+			'ads_promoted_stealth' => '',
+		])->getResponse();
+		echo "Пост".$post->id."экспортирован".PHP_EOL;
 	}
-	else
+	catch (Exception $e)
 	{
-		$result->append($tmp);
-		$count++;
-	}
-	
-	if($count >1)
-	{
-		$test = $result->execute()->response->getResponse();
-		$result = null ;
-		$count = 0;
+		echo "Запрос не зашёл".PHP_EOL;
+		var_dump($tmp);
+		var_dump($e);
+		if ($e->getCode() == 214)
+		{
+			throw new Exception('Привышен лимит публикаций 50 постов в день');
+		}
 	}
 }
-if($count <10)
-{
-	$test = $result->execute()->response->getResponse();
-}
-
 ?>
