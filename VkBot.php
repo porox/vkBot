@@ -4,10 +4,16 @@ require_once __DIR__ . '/vendor/autoload.php';
 $email = "";
 $pass  = '';
 
-$page  = file_get_contents("https://oauth.vk.com/token?grant_type=password&client_id=2274003&client_secret=hHbZxrka2uZ6jB1inYsH&username=" . $email . "&password=" . $pass);
-$page  = preg_split("/\"/", $page);
-//var_dump($page);
-$accessToken = $page[3];
+$client = new \GuzzleHttp\Client();
+$res = $client->request("GET",'https://oauth.vk.com/token', [
+	GuzzleHttp\RequestOptions::QUERY => ['grant_type' => 'password',
+										 'client_id' => 2274003,
+										 'client_secret' =>"hHbZxrka2uZ6jB1inYsH",
+										 'username' => $email,
+										 'password' => $pass]])->getBody();
+$res = json_decode($res,true);
+
+$accessToken = $res['access_token'];
 
 $vk = getjump\Vk\Core::getInstance()->apiVersion('5.65')->setToken($accessToken);
 
@@ -15,21 +21,17 @@ $vk = getjump\Vk\Core::getInstance()->apiVersion('5.65')->setToken($accessToken)
 
 $posts = $vk->request('wall.get', [
 	'owner_id' =>'',
-	'domain' => "flatfeeder",
+	'domain' => "repostyn",
 	'offset' => 0,
-	'count'  => 40
+	'count'  => 20
 ])->getResponse();
 $parseAttach = function($attachments){
 	$result ="";
 	foreach ($attachments as $attachment)
 	{
 		$attachment = (array) $attachment;
-		if ($attachment['type'] !='link')
-		{
-			$attachment[$attachment['type']] =(array) $attachment[$attachment['type']];
-			$result .= $attachment['type'].$attachment[$attachment['type']]['owner_id']."_".$attachment[$attachment['type']]['id'].",";
-			
-		}
+		$attachment[$attachment['type']] =(array) $attachment[$attachment['type']];
+		$result .= $attachment['type'].$attachment[$attachment['type']]['owner_id']."_".$attachment[$attachment['type']]['id'].",";
 	}
 	return $result;
 };
@@ -42,7 +44,7 @@ foreach($posts as $post)
 	try
 	{
 		$tmp = $vk->request('wall.post', [
-			'owner_id'             => '-34915724',
+			'owner_id'             => '-34915732',
 			'friends_only'         => 0,
 			'from_group'           => 1,
 			'message'              => $post->text,

@@ -52,22 +52,11 @@ class ComposerStaticInit2dc2e80b96db67f34d3dd8b466b3212c
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'B' => 
-        array (
-            'BirknerAlex\\XMPPHP' => 
-            array (
-                0 => __DIR__ . '/..' . '/tyrola/xmpphp/src',
-            ),
-        ),
-    );
-
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit2dc2e80b96db67f34d3dd8b466b3212c::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit2dc2e80b96db67f34d3dd8b466b3212c::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit2dc2e80b96db67f34d3dd8b466b3212c::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }
