@@ -17,60 +17,80 @@ $accessToken = $res['access_token'];
 
 $vk = getjump\Vk\Core::getInstance()->apiVersion('5.65')->setToken($accessToken);
 
-
-
 $posts = $vk->request('wall.get', [
 	'owner_id' =>'',
-	'domain' => "repostyn",
+	'domain' => "alimoney",
+	//'domain'=>'besplatno.zarepost',
 	'offset' => 0,
-	'count'  => 20
+	'count'  => 25
 ])->getResponse();
+
 $parseAttach = function($attachments){
 	$result ="";
 	foreach ($attachments as $attachment)
 	{
 		$attachment = (array) $attachment;
-		$attachment[$attachment['type']] =(array) $attachment[$attachment['type']];
-		$result .= $attachment['type'].$attachment[$attachment['type']]['owner_id']."_".$attachment[$attachment['type']]['id'].",";
+		$type = $attachment['type'];
+		if (!in_array($type,['link','page']))
+		{
+			$attachment[$type] =(array) $attachment[$type];
+			$result .= $type.$attachment[$type]['owner_id']."_".$attachment[$type]['id'].",";
+			if (!isset($attachment[$type]['owner_id']))
+			{
+				var_dump($attachment);
+			}
+		}
+		
 	}
-	return $result;
+	return substr($result,0,-1);
 };
 $result = null;
-$count = 1;
+$time = new DateTime('now');
 
 foreach($posts as $post)
 {
+	if (isset($post->copy_history))
+	{
+		$post = $post->copy_history[0];
+	}
 	
 	try
 	{
-		$tmp = $vk->request('wall.post', [
+		$time->add(new DateInterval('PT'.rand(5,58)."S"));
+		$timestamp = $time->getTimestamp();
+		$post->text =preg_replace('/\[club[0-9]*\|(.*)\]/',"[club34915732| Лайк репост]",$post->text);
+		$params	=[
 			'owner_id'             => '-34915732',
 			'friends_only'         => 0,
 			'from_group'           => 1,
-			'message'              => $post->text,
+			'message'              => $post->text ? $post->text : "",
 			'attachments'          => isset($post->attachments) ? $parseAttach($post->attachments) : "",
 			'services'             => "",
 			'signed'               => 0,
-			'publish_date'         => "",
-			'lat'                  => '',
-			'long'                 => '',
+			'publish_date'         => $timestamp,
+			'lat'                  => 0,
+			'long'                 => 0,
 			'place_id'             => '',
 			'post_id'              => '',
-			'guid'                 => '',
-			'mark_as_ads'          => '',
-			'ads_promoted_stealth' => '',
-		])->getResponse();
-		echo "Пост".$post->id."экспортирован".PHP_EOL;
+			//'guid'                 => ,
+			'mark_as_ads'          => 0,
+		];
+		$tmp = $vk->request('wall.post', $params)->getResponse();
+		echo "Пост ".$post->id." экспортирован и будет опубликованн :".$time->format('Y-m-d H:i:s').PHP_EOL;
+		
+		
 	}
 	catch (Exception $e)
 	{
 		echo "Запрос не зашёл".PHP_EOL;
-		var_dump($tmp);
-		var_dump($e);
+		var_dump($e->getCode());
+		var_dump($e->getMessage());
 		if ($e->getCode() == 214)
 		{
 			throw new Exception('Привышен лимит публикаций 50 постов в день');
 		}
 	}
+	sleep(rand(1,3));
+	$time->add(new DateInterval('PT'.rand(4,15).'M'.rand(1,58)."S"));
 }
 ?>
