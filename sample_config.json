@@ -1,8 +1,10 @@
 {
-  "vkOptions": [
+  "vkAuth": [
     {
       "user" : "",
-      "password": ""
+      "password": "",
+      "clientId": "VkAppId",
+      "clientSecret":"VkAppSecret"
     }
   ],
   "dbOptions": {

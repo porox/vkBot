@@ -7,6 +7,8 @@
  * Time: 12:37
  */
 namespace vkBot;
+use \GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 
 /**
  * Class App
@@ -89,15 +91,21 @@ class App
 		return is_null($key) ? $this->config : (isset($this->config[$key]) ? $this->config[$key] : []);
 	}
 	
-	/**
-	 *
-	 */
-	public function changeConfig()
+	public function getVkAccessToken()
 	{
-		$this->config = "changedConf";
+		$arr = $this->getConfig('vkAuth');
+		$login = $arr[0]['user'];
+		$password = $arr[0]['password'];
+		$client = new Client();
+		$res = $client->request("GET",'https://oauth.vk.com/token', [
+			RequestOptions::QUERY => ['grant_type' => 'password',
+												 'client_id' => $arr[0]['clientId'],
+												 'client_secret' =>$arr[0]['clientSecret'],
+												 'username' => $login,
+												 'password' => $password]])->getBody();
+		$res = json_decode($res,true);
+		
+		return $res['access_token'];
 	}
 }
 
-var_dump(App::get()->getConfig('vkOptions'));
-App::get()->changeConfig();
-var_dump(App::get()->getConfig('vkOptions'));

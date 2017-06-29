@@ -1,28 +1,20 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/autoloader.php';
 
-$email = "zekc95@mail.ru";
-$pass  = 'lok12345frol';
+use \vkBot\App;
 
-$client = new \GuzzleHttp\Client();
-$res = $client->request("GET",'https://oauth.vk.com/token', [
-	GuzzleHttp\RequestOptions::QUERY => ['grant_type' => 'password',
-										 'client_id' => 2274003,
-										 'client_secret' =>"hHbZxrka2uZ6jB1inYsH",
-										 'username' => $email,
-										 'password' => $pass]])->getBody();
-$res = json_decode($res,true);
+$accessToken = App::get()->getVkAccessToken();
 
-$accessToken = $res['access_token'];
 $vk = getjump\Vk\Core::getInstance()->apiVersion('5.65')->setToken($accessToken);
 
 $posts = $vk->request('wall.get', [
 	'owner_id' =>'',
 	//'domain' => "alimoney",
 	'domain'=>'besplatno.zarepost',
-	'offset' => 21,
-	'count'  => 1
+	'offset' => 0,
+	'count'  => 25
 ])->getResponse();
+
 
 $parseAttach = function($attachments){
 	$result ="";
@@ -75,13 +67,13 @@ foreach($posts as $post)
 			'mark_as_ads'          => 0,
 		];
 		$tmp = $vk->request('wall.post', $params)->getResponse();
-		echo "Пост ".$post->id." экспортирован и будет опубликованн :".$time->format('Y-m-d H:i:s').PHP_EOL;
+		echo "Post ".$post->id." export  published :".$time->format('Y-m-d H:i:s').PHP_EOL;
 		
 		
 	}
 	catch (Exception $e)
 	{
-		echo "Запрос не зашёл".PHP_EOL;
+		echo "query was down".PHP_EOL;
 		var_dump($e->getCode());
 		var_dump($e->getMessage());
 		if ($e->getCode() == 214)
@@ -90,6 +82,6 @@ foreach($posts as $post)
 		}
 	}
 	sleep(rand(1,3));
-	$time->add(new DateInterval('PT'.rand(3,10).'M'.rand(1,58)."S"));
+	$time->add(new DateInterval('PT'.rand(3,25).'M'.rand(1,58)."S"));
 }
 ?>
