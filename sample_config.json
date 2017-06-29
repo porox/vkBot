@@ -1,0 +1,15 @@
+{
+  "vkOptions": [
+    {
+      "user" : "",
+      "password": ""
+    }
+  ],
+  "dbOptions": {
+    "host": "",
+    "port": "",
+    "dbName": "",
+    "username": "",
+    "password": ""
+  }
+}

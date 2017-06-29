@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-$email = "";
-$pass  = '';
+$email = "zekc95@mail.ru";
+$pass  = 'lok12345frol';
 
 $client = new \GuzzleHttp\Client();
 $res = $client->request("GET",'https://oauth.vk.com/token', [
@@ -14,15 +14,14 @@ $res = $client->request("GET",'https://oauth.vk.com/token', [
 $res = json_decode($res,true);
 
 $accessToken = $res['access_token'];
-
 $vk = getjump\Vk\Core::getInstance()->apiVersion('5.65')->setToken($accessToken);
 
 $posts = $vk->request('wall.get', [
 	'owner_id' =>'',
-	'domain' => "alimoney",
-	//'domain'=>'besplatno.zarepost',
-	'offset' => 0,
-	'count'  => 25
+	//'domain' => "alimoney",
+	'domain'=>'besplatno.zarepost',
+	'offset' => 21,
+	'count'  => 1
 ])->getResponse();
 
 $parseAttach = function($attachments){
@@ -87,10 +86,10 @@ foreach($posts as $post)
 		var_dump($e->getMessage());
 		if ($e->getCode() == 214)
 		{
-			throw new Exception('Привышен лимит публикаций 50 постов в день');
+			//throw new Exception('Привышен лимит публикаций 50 постов в день');
 		}
 	}
 	sleep(rand(1,3));
-	$time->add(new DateInterval('PT'.rand(4,15).'M'.rand(1,58)."S"));
+	$time->add(new DateInterval('PT'.rand(3,10).'M'.rand(1,58)."S"));
 }
 ?>
