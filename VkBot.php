@@ -82,6 +82,6 @@ foreach($posts as $post)
 		}
 	}
 	sleep(rand(1,3));
-	$time->add(new DateInterval('PT'.rand(3,25).'M'.rand(1,58)."S"));
+	$time->add(new DateInterval('PT'.rand(10,35).'M'.rand(1,58)."S"));
 }
 ?>
