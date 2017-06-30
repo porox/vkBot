@@ -107,5 +107,12 @@ class App
 		
 		return $res['access_token'];
 	}
+	
+	public function getCrons()
+	{
+		return [
+		'Cron/Test.php',
+		];
+	}
 }
 

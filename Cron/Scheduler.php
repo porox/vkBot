@@ -18,7 +18,7 @@ abstract  class Scheduler
 	protected $pid;
 	
 	/**
-	 * Задержка (в секундах) в конце "лупа", чтобы не перегружать сервера впустую (альтернатива для $__fork_delay)
+	 * Задержка (в секундах) в конце "лупа"
 	 * @var int
 	 */
 	protected $loopDelay;
@@ -34,7 +34,6 @@ abstract  class Scheduler
 		$this->loopDelay        = isset($options['loop_delay']) ? (int) $options['loop_delay'] : 1;
 		$this->isDebug          =  (isset($options['debug']) && $options['debug']);
 		
-		//ini_set('memory_limit', );
 		ini_set('error_reporting', -1);
 	}
 	
@@ -81,7 +80,7 @@ abstract  class Scheduler
 		foreach ($this->provider() as $item) {
 			$this->handler($item);
 		}
-		var_dump("Конец обработки");
+		
 		if ($this->loopDelay > 0) {
 			$this->debugMessage('- LOOP_DELAY -');
 			sleep($this->loopDelay);

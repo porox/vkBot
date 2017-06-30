@@ -26,8 +26,8 @@ class Test extends \Cron\Scheduler
 	
 	protected function handler(&$data_item)
 	{
-		var_dump($data_item);
+		echo $data_item .PHP_EOL;
 	}
 }
 
-(new Test(['debug'=>1]))->foreverLoop();
+(new Test(['debug'=>0]))->foreverLoop();
