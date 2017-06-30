@@ -9,8 +9,8 @@ $vk = getjump\Vk\Core::getInstance()->apiVersion('5.65')->setToken($accessToken)
 
 $posts = $vk->request('wall.get', [
 	'owner_id' =>'',
-	//'domain' => "alimoney",
-	'domain'=>'besplatno.zarepost',
+	'domain' => "alimoney",
+	//'domain'=>'besplatno.zarepost',
 	'offset' => 0,
 	'count'  => 25
 ])->getResponse();
@@ -82,6 +82,6 @@ foreach($posts as $post)
 		}
 	}
 	sleep(rand(1,3));
-	$time->add(new DateInterval('PT'.rand(10,35).'M'.rand(1,58)."S"));
+	$time->add(new DateInterval('PT'.rand(18,20).'M'.rand(1,58)."S"));
 }
 ?>
