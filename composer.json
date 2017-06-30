@@ -1,5 +1,11 @@
 {
   "packagist": true,
+  "autoload": {
+    "files": ["App.php"],
+    "psr-4": {
+      "Cron\\": "Cron/"
+    }
+  },
   "require": {
     "getjump/vk": "*"
     }

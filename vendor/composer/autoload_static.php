@@ -10,6 +10,7 @@ class ComposerStaticInit2dc2e80b96db67f34d3dd8b466b3212c
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        'd64a81d7db4c397f50894b2e5cd69a72' => __DIR__ . '/../..' . '/App.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -26,6 +27,10 @@ class ComposerStaticInit2dc2e80b96db67f34d3dd8b466b3212c
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
+        ),
+        'C' => 
+        array (
+            'Cron\\' => 5,
         ),
     );
 
@@ -49,6 +54,10 @@ class ComposerStaticInit2dc2e80b96db67f34d3dd8b466b3212c
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Cron\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Cron',
         ),
     );
 
