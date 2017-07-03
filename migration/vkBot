@@ -1,0 +1,8 @@
+CREATE SCHEMA `vkBot` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
+
+CREATE TABLE `vkBot`.`sendedPosts` (
+  `id_group` INT NOT NULL,
+  `hash` BINARY(16) NOT NULL,
+  `sendedPostscol` DATETIME,
+  PRIMARY KEY (`id_group`, `hash`))
+  ENGINE = InnoDB;

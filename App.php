@@ -34,6 +34,11 @@ class App
 	private $config = null;
 	
 	/**
+	 * @var \PDO
+	 */
+	private $connectionDB;
+	
+	/**
 	 * @var string
 	 */
 	private $confFile = 'config.json';
@@ -42,6 +47,8 @@ class App
 	 * @var null|App
 	 */
 	private static $instance = null;
+	
+	private $token =null;
 	
 	
 	/**
@@ -82,7 +89,7 @@ class App
 	 *
 	 * @return array|mixed|null|string
 	 */
-	public function getConfig($key = null)
+	private function getConfig($key = null)
 	{
 		if (is_null($this->config))
 		{
@@ -91,21 +98,35 @@ class App
 		return is_null($key) ? $this->config : (isset($this->config[$key]) ? $this->config[$key] : []);
 	}
 	
+	public function getPDOConnection()
+	{
+		if (!isset($this->connectionDB))
+		{
+			$settings = $this->getConfig('dbOptions');
+			$this->connectionDB = new \PDO($settings['connection'].':host='.$settings['host'].';port='.$settings['port'].";dbname=".$settings['dbName']);
+		}
+		return $this->connectionDB;
+		
+	}
+	
 	public function getVkAccessToken()
 	{
-		$arr = $this->getConfig('vkAuth');
-		$login = $arr[0]['user'];
-		$password = $arr[0]['password'];
-		$client = new Client();
-		$res = $client->request("GET",'https://oauth.vk.com/token', [
-			RequestOptions::QUERY => ['grant_type' => 'password',
-												 'client_id' => $arr[0]['clientId'],
-												 'client_secret' =>$arr[0]['clientSecret'],
-												 'username' => $login,
-												 'password' => $password]])->getBody();
-		$res = json_decode($res,true);
+		if (is_null($this->token))
+		{
+			$arr = $this->getConfig('vkAuth');
+			$client = new Client();
+			$res = $client->request("GET",'https://oauth.vk.com/token', [
+				RequestOptions::QUERY => ['grant_type' => 'password',
+										  'client_id' => $arr[0]['clientId'],
+										  'client_secret' =>$arr[0]['clientSecret'],
+										  'username' => $arr[0]['user'],
+										  'password' => $arr[0]['password']]])->getBody();
+			$res = json_decode($res,true);
+			$this->token =$res['access_token'];
+		}
 		
-		return $res['access_token'];
+		
+		return $this->token;
 	}
 	
 	public function getCrons()

@@ -3,10 +3,13 @@
   "autoload": {
     "files": ["App.php"],
     "psr-4": {
-      "Cron\\": "Cron/"
+      "Cron\\": "Cron/",
+      "Attachments\\":"Attachments/",
+      "lib\\" : "lib/"
     }
   },
   "require": {
-    "getjump/vk": "*"
+    "getjump/vk": "*",
+    "doctrine/orm": "*"
     }
 }
