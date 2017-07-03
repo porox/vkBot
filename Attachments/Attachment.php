@@ -6,7 +6,7 @@
  * Time: 11:52
  */
 
-namespace vkBot\Attachments;
+namespace Attachments;
 
 
 abstract class Attachment
@@ -18,7 +18,7 @@ abstract class Attachment
 	{
 		$attachment = (array) $attachment;
 		$this->type = $attachment['type'];
-		$this->id = $attachment[$this->type]->id;
+		$this->id = isset($attachment[$this->type]->id)? $attachment[$this->type]->id : 0 ;
 		$this->parseParams($attachment[$this->type]);
 	}
 	
@@ -26,7 +26,7 @@ abstract class Attachment
 	
 	public function forSend()
 	{
-		if (isset($this->ownerId))
+		if (isset($this->ownerId) && $this->id)
 		{
 			return $this->type.$this->ownerId."_".$this->id;
 		}

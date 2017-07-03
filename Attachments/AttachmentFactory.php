@@ -6,8 +6,8 @@
  * Time: 13:42
  */
 
-namespace vkBot\Attachments;
-
+namespace Attachments;
+use \Attachments\Types\Bace;
 
 /**
  * Class AttachmentFactory
@@ -26,8 +26,9 @@ class AttachmentFactory
 	{
 		if (class_exists(__DIR__."/Types/".$attachment->type) && class_implements('vkBot\Attachments\Attachment'))
 		{
-			return new (__DIR__."/Types/".$attachment->type)($attachment);
+			$path = __DIR__."/Types/".$attachment->type;
+			return new $path($attachment);
 		}
-		return new \vkBot\Attachments\Types\Bace($attachment);
+		return new Bace($attachment);
 	}
 }

@@ -6,9 +6,9 @@
  * Time: 13:48
  */
 
-namespace vkBot\Attachments\Types;
+namespace Attachments\Types;
 
-use vkBot\Attachments\Attachment;
+use Attachments\Attachment;
 
 class Photo extends Attachment
 {

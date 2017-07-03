@@ -6,13 +6,13 @@
  * Time: 16:04
  */
 
-namespace vkBot\Posts;
+namespace Posts;
 use lib\ArrayIterator;
 use vkBot\App;
 
 class Posts extends  ArrayIterator
 {
-	public function __construct(\stdClass $posts)
+	public function __construct(array $posts)
 	{
 		parent::__construct();
 		
@@ -38,9 +38,14 @@ class Posts extends  ArrayIterator
 	
 	public function sendPosts()
 	{
+		$count = 0;
 		foreach ($this->storage as $key => $post)
 		{
-			
+			/**
+			 * @var Post $post
+			 */
+			$count = $post->sendPost() ? $count++ : $count;
 		}
+		return $count;
 	}
 }

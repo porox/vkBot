@@ -6,11 +6,11 @@
  * Time: 10:46
  */
 
-namespace vkBot\Posts;
+namespace Posts;
 
 
 use vkBot\App;
-use vkBot\Attachments\Attachments;
+use Attachments\Attachments;
 
 /**
  * Class Post
@@ -50,15 +50,17 @@ class Post
 	 */
 	public function __construct(\stdClass $postObj)
 	{
+		
 		if (isset($postObj->copy_history))
 		{
 			$postObj = $postObj->copy_history[0];
 		}
-		$this->id =$postObj->Id;
+		$this->id =$postObj->id;
 		$this->text = $postObj->text;
-		$this->ownerId = $postObj->ownerId;
-		$this->attachments = isset($postObj->attachments)? new Attachments($postObj->attachments) : [];
-		$this->postType = $postObj->postType;
+		$this->ownerId = $postObj->owner_id;
+		$this->attachments = isset($postObj->attachments)? new Attachments($postObj->attachments) : "";
+		$this->postType = $postObj->post_type;
+		$this->date = $postObj->date;
 	}
 	
 	
@@ -69,25 +71,24 @@ class Post
 	{
 		if (is_null($this->hash))
 		{
-			$hash = $this->text+ $this->attachments;
+			$hash = $this->text." ".$this->attachments;
 			$this->hash= md5($hash);
 		}
-		
 		return $this->hash;
 	}
 	
-	public function checkAlreadySend($groupId)
+	public function checkAlreadySend($groupId = 1)
 	{
 		$db = App::get()->getPDOConnection();
 		
-		$obj =$db->prepare("SELECT * FORM sendedPosts WHERE hash LIKE '".$this->getHash()."'");
-		return $obj->fetchAll() ? true : false;
+		$obj =$db->prepare("SELECT * FORM sendedPosts WHERE id_group = ".$groupId." hash = '".$this->getHash()."' FOR UPDATE");
+		return empty($obj->fetchAll()) ? false : true;
 	}
-	public function sendPost()
+	public function sendPost($groupId = 1)
 	{
 		$db = App::get()->getPDOConnection();
 		
-		$obj =$db->prepare('INSERT INTO sendedPosts SET  group_id= ? hash = ?',[1,$this->getHash()]);
-		$obj->execute();
+		$obj = $db->prepare('INSERT INTO sendedPosts ( id_group, hash ) VALUES ('.$groupId.',"'.$this->getHash().'")');
+		return $obj->execute();
 	}
 }

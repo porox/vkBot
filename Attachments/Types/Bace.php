@@ -6,9 +6,9 @@
  * Time: 13:49
  */
 
-namespace vkBot\Attachments\Types;
+namespace Attachments\Types;
 
-use vkBot\Attachments\Attachment;
+use \Attachments\Attachment;
 
 class Bace extends Attachment
 {

@@ -5,11 +5,11 @@
     "psr-4": {
       "Cron\\": "Cron/",
       "Attachments\\":"Attachments/",
-      "lib\\" : "lib/"
+      "lib\\" : "lib/",
+      "Posts\\" : "Posts/"
     }
   },
   "require": {
-    "getjump/vk": "*",
-    "doctrine/orm": "*"
+    "getjump/vk": "*"
     }
 }

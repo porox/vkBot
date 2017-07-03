@@ -1,16 +1,25 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
+use \Posts\Posts;
 
-$vk = getjump\Vk\Core::getInstance()->apiVersion('5.65')->setToken(\vkBot\App::get()->getVkAccessToken());
+$vk = \vkBot\App::get()->getVkInstanse();
 
+sleep(1);
 $result = $vk->request('newsfeed.search', [
 	'q' => 'репост лайк конкурс like розыгрыш приз ',
 	'extended'=> '',
-	'count' => 100,
+	'count' => 10,
 ])->getResponse();
 
-new \vkBot\Posts\Posts($result);
-
-
-var_dump($result);
+$test = new Posts($result);
+\vkBot\App::get()->getPDOConnection()->beginTransaction();
+try {
+	$test->checkSendedPosts(1);
+	$test->sendPosts();
+	\vkBot\App::get()->getPDOConnection()->commit();
+}
+catch (Exception $e)
+{
+	\vkBot\App::get()->getPDOConnection()->rollBack();
+}

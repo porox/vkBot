@@ -9,6 +9,7 @@
 namespace vkBot;
 use \GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use getjump\Vk\Core as VkApi;
 
 /**
  * Class App
@@ -49,6 +50,8 @@ class App
 	private static $instance = null;
 	
 	private $token =null;
+	
+	private $vkInstanse = null;
 	
 	
 	/**
@@ -103,13 +106,14 @@ class App
 		if (!isset($this->connectionDB))
 		{
 			$settings = $this->getConfig('dbOptions');
-			$this->connectionDB = new \PDO($settings['connection'].':host='.$settings['host'].';port='.$settings['port'].";dbname=".$settings['dbName']);
+			$this->connectionDB = new \PDO($settings['connection'].':host='.$settings['host'].';port='.$settings['port'].";dbname=".$settings['dbName'], $settings['username'],$settings['password']);
 		}
 		return $this->connectionDB;
 		
 	}
 	
-	public function getVkAccessToken()
+	
+	private function getVkAccessToken()
 	{
 		if (is_null($this->token))
 		{
@@ -127,6 +131,20 @@ class App
 		
 		
 		return $this->token;
+	}
+	
+	/**
+	 * @return VkApi|null
+	 */
+	public function getVkInstanse()
+	{
+		if (is_null($this->vkInstanse))
+		{
+			$token = $this->getVkAccessToken();
+			$this->vkInstanse = VkApi::getInstance()->apiVersion('5.65')->setToken($token);
+		}
+		
+		return $this->vkInstanse;
 	}
 	
 	public function getCrons()

@@ -3,9 +3,7 @@ require_once __DIR__ . '/autoloader.php';
 
 use \vkBot\App;
 
-$accessToken = App::get()->getVkAccessToken();
-
-$vk = getjump\Vk\Core::getInstance()->apiVersion('5.65')->setToken($accessToken);
+$vk = App::get()->getVkInstanse();
 
 $posts = $vk->request('wall.get', [
 	'owner_id' =>'',

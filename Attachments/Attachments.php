@@ -6,8 +6,8 @@
  * Time: 12:36
  */
 
-namespace vkBot\Attachments;
-use \vkBot\Attachments\AttachmentFactory;
+namespace Attachments;
+use Attachments\AttachmentFactory;
 use \lib\ArrayIterator;
 
 /**
@@ -22,7 +22,7 @@ class Attachments extends ArrayIterator
 	 *
 	 * @param \stdClass $attachments
 	 */
-	public function __construct(\stdClass $attachments)
+	public function __construct(array $attachments)
 	{
 		parent::__construct();
 		
