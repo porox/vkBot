@@ -36,7 +36,12 @@ class Posts extends  ArrayIterator
 		}
 	}
 	
-	public function sendPosts()
+	public function procesPosts($groupId)
+	{
+		
+	}
+	
+	public function markAsProcesed()
 	{
 		$count = 0;
 		foreach ($this->storage as $key => $post)
@@ -44,7 +49,7 @@ class Posts extends  ArrayIterator
 			/**
 			 * @var Post $post
 			 */
-			$count = $post->sendPost() ? $count++ : $count;
+			$count = $post->markAsProcessed() ? ++$count : $count;
 		}
 		return $count;
 	}

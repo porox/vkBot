@@ -7,16 +7,17 @@ $vk = \vkBot\App::get()->getVkInstanse();
 
 sleep(1);
 $result = $vk->request('newsfeed.search', [
-	'q' => 'репост лайк конкурс like розыгрыш приз ',
+	'q' => 'репост лайк конкурс like розыгрыш приз',
 	'extended'=> '',
-	'count' => 10,
+	'count' => 15,
 ])->getResponse();
 
 $test = new Posts($result);
 \vkBot\App::get()->getPDOConnection()->beginTransaction();
 try {
 	$test->checkSendedPosts(1);
-	$test->sendPosts();
+	$test->
+	$test->markAsProcesed();
 	\vkBot\App::get()->getPDOConnection()->commit();
 }
 catch (Exception $e)

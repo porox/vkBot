@@ -24,9 +24,9 @@ class Test extends \Cron\Scheduler
 		}
 	}
 	
-	protected function handler(&$data_item)
+	protected function handler(&$item)
 	{
-		echo $data_item .PHP_EOL;
+		echo $item .PHP_EOL;
 	}
 }
 

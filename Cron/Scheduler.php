@@ -61,10 +61,10 @@ abstract  class Scheduler
 	 * Метод в котором необходимо реализовать логику обработки одного элемента данных,
 	 * который должен передаваться как единственный аргумент
 	 *
-	 * @param $data_item - единица обрабатываемых данных
+	 * @param $item - единица обрабатываемых данных
 	 * @return mixed
 	 */
-	abstract protected function handler(&$data_item);
+	abstract protected function handler(&$item);
 	
 	/**
 	 * Главный цикл, в котором вызывается обработчик (метод _handler) для каждого элемента данных

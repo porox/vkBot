@@ -150,7 +150,7 @@ class App
 	public function getCrons()
 	{
 		return [
-		'Cron/Test.php',
+		'Cron/Test.php' => '34915732',
 		];
 	}
 }

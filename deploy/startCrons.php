@@ -2,10 +2,10 @@
 require_once __DIR__.'/../autoloader.php';
 use vkBot\App;
 echo "Run:".PHP_EOL;
-foreach (App::get()->getCrons() as $script)
+foreach (App::get()->getCrons() as $script => $params)
 {
 	$path = realpath (__DIR__."/../".$script);
-	exec('/usr/bin/php ' . $path . ' > /dev/null &');
+	exec('/usr/bin/php ' . $path." ".$params. ' > /dev/null &');
 	
 	exec("ps axo pid,command | grep '" . $script . "' | grep -v grep | awk '{print $1}'", $pidsStarting);
 	

@@ -64,6 +64,16 @@ class Post
 	}
 	
 	
+	public function setText($text)
+	{
+		$this->text = $text;
+	}
+	
+	public function getText()
+	{
+		return $this->text;
+	}
+	
 	/**
 	 * @return string
 	 */
@@ -84,11 +94,38 @@ class Post
 		$obj =$db->prepare("SELECT * FORM sendedPosts WHERE id_group = ".$groupId." hash = '".$this->getHash()."' FOR UPDATE");
 		return empty($obj->fetchAll()) ? false : true;
 	}
-	public function sendPost($groupId = 1)
+	
+	public function markAsProcessed($groupId = 1)
 	{
 		$db = App::get()->getPDOConnection();
 		
-		$obj = $db->prepare('INSERT INTO sendedPosts ( id_group, hash ) VALUES ('.$groupId.',"'.$this->getHash().'")');
-		return $obj->execute();
+		$obj = $db->prepare('INSERT INTO sendedPosts ( id_group, hash, date) VALUES ( :groupId,:hash,:date)');
+		
+		return $obj->execute([
+			'groupId' => $groupId,
+			'hash' => $this->getHash(),
+			'date' => (new \DateTime())->format('Y-m-d H:i:s')
+		]);
+		
+	}
+	
+	public function getMessageForSend($groupId)
+	{
+		return [
+			'owner_id'             => '-'.$groupId,
+			'friends_only'         => 0,
+			'from_group'           => 1,
+			'message'              => $this->text,
+			'attachments'          => $this->attachments->getAttachmentsForSend(),//isset($post->attachments) ? $parseAttach($post->attachments) : "",
+			'services'             => "",
+			'signed'               => 0,
+			'publish_date'         => "",
+			'lat'                  => 0,
+			'long'                 => 0,
+			'place_id'             => '',
+			'post_id'              => '',
+			//'guid'                 => ,
+			'mark_as_ads'          => 0,
+		];
 	}
 }
