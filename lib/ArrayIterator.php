@@ -9,7 +9,7 @@
 namespace lib;
 
 
-class ArrayIterator  implements  \Iterator
+class ArrayIterator implements \Iterator
 {
 	/**
 	 * @var array
@@ -19,11 +19,12 @@ class ArrayIterator  implements  \Iterator
 	/**
 	 * @var int
 	 */
-	protected $index ;
+	protected $index;
 	
 	public function __construct()
 	{
-		$this->index = 0;
+		$this->index   = 0;
+		$this->storage = [];
 	}
 	
 	/**
@@ -31,7 +32,7 @@ class ArrayIterator  implements  \Iterator
 	 */
 	public function current()
 	{
-		$this->storage[$this->index];
+		return $this->storage[$this->index];
 	}
 	
 	/**
@@ -39,7 +40,7 @@ class ArrayIterator  implements  \Iterator
 	 */
 	public function next()
 	{
-		$this->index ++;
+		++$this->index;
 	}
 	
 	/**

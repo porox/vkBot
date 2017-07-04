@@ -7,10 +7,11 @@
  */
 
 namespace Posts;
+
 use lib\ArrayIterator;
 use vkBot\App;
 
-class Posts extends  ArrayIterator
+class Posts extends ArrayIterator
 {
 	public function __construct(array $posts)
 	{
@@ -18,39 +19,8 @@ class Posts extends  ArrayIterator
 		
 		foreach ($posts as $post)
 		{
-			$this->storage[] = new Post($post);
+			$this->storage[$this->index] = new Post($post);
+			$this->index                 = ++$this->index;
 		}
-	}
-	
-	public function checkSendedPosts($groupId)
-	{
-		foreach ($this->storage as $key => $post)
-		{
-			/**
-			 * @var Post $post
-			 */
-			if ($post->checkAlreadySend($groupId))
-			{
-				unset ($this->storage[$key]);
-			}
-		}
-	}
-	
-	public function procesPosts($groupId)
-	{
-		
-	}
-	
-	public function markAsProcesed()
-	{
-		$count = 0;
-		foreach ($this->storage as $key => $post)
-		{
-			/**
-			 * @var Post $post
-			 */
-			$count = $post->markAsProcessed() ? ++$count : $count;
-		}
-		return $count;
 	}
 }

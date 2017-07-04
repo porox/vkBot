@@ -6,3 +6,12 @@ CREATE TABLE `vkBot`.`sendedPosts` (
   `sendedPostscol` DATETIME,
   PRIMARY KEY (`id_group`, `hash`))
   ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS `postsNeedSend`;
+CREATE TABLE `postsNeedSend` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `post_data` MEDIUMTEXT COLLATE utf8_bin,
+  PRIMARY KEY (`id`),
+  KEY `group` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

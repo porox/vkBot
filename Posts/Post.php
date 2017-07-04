@@ -39,8 +39,8 @@ class Post
 	
 	private $date;
 	
-	private  $postType;
-	private  $hash;
+	private $postType;
+	private $hash;
 	
 	
 	/**
@@ -55,12 +55,12 @@ class Post
 		{
 			$postObj = $postObj->copy_history[0];
 		}
-		$this->id =$postObj->id;
-		$this->text = $postObj->text;
-		$this->ownerId = $postObj->owner_id;
-		$this->attachments = isset($postObj->attachments)? new Attachments($postObj->attachments) : "";
-		$this->postType = $postObj->post_type;
-		$this->date = $postObj->date;
+		$this->id          = $postObj->id;
+		$this->text        = $postObj->text;
+		$this->ownerId     = $postObj->owner_id;
+		$this->attachments = isset($postObj->attachments) ? new Attachments($postObj->attachments) : new Attachments([]);
+		$this->postType    = $postObj->post_type;
+		$this->date        = $postObj->date;
 	}
 	
 	
@@ -74,6 +74,11 @@ class Post
 		return $this->text;
 	}
 	
+	public function getId()
+	{
+		return $this->id;
+	}
+	
 	/**
 	 * @return string
 	 */
@@ -81,9 +86,10 @@ class Post
 	{
 		if (is_null($this->hash))
 		{
-			$hash = $this->text." ".$this->attachments;
-			$this->hash= md5($hash);
+			$hash       = $this->text . " " . $this->attachments;
+			$this->hash = md5($hash);
 		}
+		
 		return $this->hash;
 	}
 	
@@ -91,7 +97,8 @@ class Post
 	{
 		$db = App::get()->getPDOConnection();
 		
-		$obj =$db->prepare("SELECT * FORM sendedPosts WHERE id_group = ".$groupId." hash = '".$this->getHash()."' FOR UPDATE");
+		$obj = $db->prepare("SELECT * FORM sendedPosts WHERE id_group = " . $groupId . " hash = '" . $this->getHash() . "' FOR UPDATE");
+		
 		return empty($obj->fetchAll()) ? false : true;
 	}
 	
@@ -103,8 +110,8 @@ class Post
 		
 		return $obj->execute([
 			'groupId' => $groupId,
-			'hash' => $this->getHash(),
-			'date' => (new \DateTime())->format('Y-m-d H:i:s')
+			'hash'    => $this->getHash(),
+			'date'    => (new \DateTime())->format('Y-m-d H:i:s')
 		]);
 		
 	}
@@ -112,20 +119,21 @@ class Post
 	public function getMessageForSend($groupId)
 	{
 		return [
-			'owner_id'             => '-'.$groupId,
-			'friends_only'         => 0,
-			'from_group'           => 1,
-			'message'              => $this->text,
-			'attachments'          => $this->attachments->getAttachmentsForSend(),//isset($post->attachments) ? $parseAttach($post->attachments) : "",
-			'services'             => "",
-			'signed'               => 0,
-			'publish_date'         => "",
-			'lat'                  => 0,
-			'long'                 => 0,
-			'place_id'             => '',
-			'post_id'              => '',
+			'owner_id'     => '-' . $groupId,
+			'friends_only' => 0,
+			'from_group'   => 1,
+			'message'      => $this->text,
+			'attachments'  => $this->attachments->getAttachmentsForSend(),
+			//isset($post->attachments) ? $parseAttach($post->attachments) : "",
+			'services'     => "",
+			'signed'       => 0,
+			'publish_date' => "",
+			'lat'          => 0,
+			'long'         => 0,
+			'place_id'     => '',
+			'post_id'      => '',
 			//'guid'                 => ,
-			'mark_as_ads'          => 0,
+			'mark_as_ads'  => 0,
 		];
 	}
 }

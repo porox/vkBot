@@ -9,45 +9,51 @@
 namespace Cron;
 
 
-abstract  class Scheduler
+abstract class Scheduler
 {
 	/**
 	 * Идентификатор текущего процесса
+	 *
 	 * @var int
 	 */
 	protected $pid;
 	
 	/**
 	 * Задержка (в секундах) в конце "лупа"
+	 *
 	 * @var int
 	 */
 	protected $loopDelay;
 	
 	/**
 	 * В режиме "Дебага" есть некоторая отладочная информация по запуску процессов
+	 *
 	 * @var bool
 	 */
 	protected $isDebug;
 	
-	public function __construct(array $options = array()) {
-		$this->pid              = posix_getpid();
-		$this->loopDelay        = isset($options['loop_delay']) ? (int) $options['loop_delay'] : 1;
-		$this->isDebug          =  (isset($options['debug']) && $options['debug']);
+	public function __construct(array $options = [])
+	{
+		$this->pid = 1;//posix_getpid();
+		$this->loopDelay = isset($options['loop_delay']) ? (int) $options['loop_delay'] : 1;
+		$this->isDebug = (isset($options['debug']) && $options['debug']);
 		
 		ini_set('error_reporting', -1);
 	}
 	
-	protected function debugMessage($message) {
-		if ($this->isDebug) {
-			echo (
-				is_array($message) ?
-					print_r($message, true) :
-					implode(' ', array($this->pid, trim($message)))
-				) . PHP_EOL;
+	protected function debugMessage($message)
+	{
+		if ($this->isDebug)
+		{
+			echo (is_array($message) ? print_r($message, true) : implode(' ', [
+					$this->pid,
+					trim($message)
+				])) . PHP_EOL;
 		}
 	}
 	
-	protected static function isIterable($var) {
+	protected static function isIterable($var)
+	{
 		return (is_array($var) || $var instanceof \Traversable);
 	}
 	
@@ -62,6 +68,7 @@ abstract  class Scheduler
 	 * который должен передаваться как единственный аргумент
 	 *
 	 * @param $item - единица обрабатываемых данных
+	 *
 	 * @return mixed
 	 */
 	abstract protected function handler(&$item);
@@ -71,17 +78,21 @@ abstract  class Scheduler
 	 *
 	 * @throws \Exception
 	 */
-	final protected function loop() {
-		if (!self::isIterable($this->provider())) {
+	final protected function loop()
+	{
+		if (!self::isIterable($this->provider()))
+		{
 			throw new \Exception('Property "_provider" must be an iterable!');
 		}
 		$this->debugMessage('- LOOP -');
 		//declare (ticks = 1);
-		foreach ($this->provider() as $item) {
+		foreach ($this->provider() as $item)
+		{
 			$this->handler($item);
 		}
 		
-		if ($this->loopDelay > 0) {
+		if ($this->loopDelay > 0)
+		{
 			$this->debugMessage('- LOOP_DELAY -');
 			sleep($this->loopDelay);
 		}
@@ -93,10 +104,19 @@ abstract  class Scheduler
 	 */
 	public function foreverLoop()
 	{
-		while(true)
+		while (true)
 		{
-			$this->loop();
-			sleep(1);
+			try
+			{
+				$this->loop();
+				sleep(1);
+			} catch (\Exception $e)
+			{
+				//silence is gold
+			} finally
+			{
+				sleep($this->loopDelay);
+			}
 		}
 	}
 	

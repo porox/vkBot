@@ -7,6 +7,7 @@
  * Time: 12:37
  */
 namespace vkBot;
+
 use \GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use getjump\Vk\Core as VkApi;
@@ -21,12 +22,16 @@ class App
 	/**
 	 * App constructor.
 	 */
-	private  function __construct() {}
+	private function __construct()
+	{
+	}
 	
 	/**
 	 *
 	 */
-	private function __clone() {}
+	private function __clone()
+	{
+	}
 	
 	
 	/**
@@ -49,7 +54,7 @@ class App
 	 */
 	private static $instance = null;
 	
-	private $token =null;
+	private $token = null;
 	
 	private $vkInstanse = null;
 	
@@ -57,14 +62,15 @@ class App
 	/**
 	 * @return App
 	 */
-	public  static function get ()
+	public static function get()
 	{
 		
 		if (is_null(self::$instance))
 		{
-			$class =get_called_class();
-		   	self::$instance = new  $class;
+			$class          = get_called_class();
+			self::$instance = new  $class;
 		}
+		
 		return self::$instance;
 	}
 	
@@ -72,18 +78,19 @@ class App
 	 * @return mixed|string
 	 * @throws \Exception
 	 */
-	private  function initConfig()
+	private function initConfig()
 	{
-		$filePath = __DIR__.'/'.$this->confFile;
+		$filePath = __DIR__ . '/' . $this->confFile;
 		if (file_exists($filePath))
 		{
 			$json = file_get_contents($filePath);
-			$json = json_decode($json,true);
+			$json = json_decode($json, true);
 		}
 		else
 		{
-			throw new \Exception("Config file: ".$filePath." not exist!!");
+			throw new \Exception("Config file: " . $filePath . " not exist!!");
 		}
+		
 		return $json;
 	}
 	
@@ -98,6 +105,7 @@ class App
 		{
 			$this->config = $this->initConfig();
 		}
+		
 		return is_null($key) ? $this->config : (isset($this->config[$key]) ? $this->config[$key] : []);
 	}
 	
@@ -105,9 +113,10 @@ class App
 	{
 		if (!isset($this->connectionDB))
 		{
-			$settings = $this->getConfig('dbOptions');
-			$this->connectionDB = new \PDO($settings['connection'].':host='.$settings['host'].';port='.$settings['port'].";dbname=".$settings['dbName'], $settings['username'],$settings['password']);
+			$settings           = $this->getConfig('dbOptions');
+			$this->connectionDB = new \PDO($settings['connection'] . ':host=' . $settings['host'] . ';port=' . $settings['port'] . ";dbname=" . $settings['dbName'], $settings['username'], $settings['password']);
 		}
+		
 		return $this->connectionDB;
 		
 	}
@@ -117,16 +126,19 @@ class App
 	{
 		if (is_null($this->token))
 		{
-			$arr = $this->getConfig('vkAuth');
-			$client = new Client();
-			$res = $client->request("GET",'https://oauth.vk.com/token', [
-				RequestOptions::QUERY => ['grant_type' => 'password',
-										  'client_id' => $arr[0]['clientId'],
-										  'client_secret' =>$arr[0]['clientSecret'],
-										  'username' => $arr[0]['user'],
-										  'password' => $arr[0]['password']]])->getBody();
-			$res = json_decode($res,true);
-			$this->token =$res['access_token'];
+			$arr         = $this->getConfig('vkAuth');
+			$client      = new Client();
+			$res         = $client->request("GET", 'https://oauth.vk.com/token', [
+				RequestOptions::QUERY => [
+					'grant_type'    => 'password',
+					'client_id'     => $arr[0]['clientId'],
+					'client_secret' => $arr[0]['clientSecret'],
+					'username'      => $arr[0]['user'],
+					'password'      => $arr[0]['password']
+				]
+			])->getBody();
+			$res         = json_decode($res, true);
+			$this->token = $res['access_token'];
 		}
 		
 		
@@ -140,7 +152,7 @@ class App
 	{
 		if (is_null($this->vkInstanse))
 		{
-			$token = $this->getVkAccessToken();
+			$token            = $this->getVkAccessToken();
 			$this->vkInstanse = VkApi::getInstance()->apiVersion('5.65')->setToken($token);
 		}
 		
@@ -150,7 +162,7 @@ class App
 	public function getCrons()
 	{
 		return [
-		'Cron/Test.php' => '34915732',
+			'Cron/PostsFromSerch.php' => '34915732',
 		];
 	}
 }
