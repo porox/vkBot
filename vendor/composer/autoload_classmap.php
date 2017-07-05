@@ -6,4 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Porter' => $vendorDir . '/camspiers/porter-stemmer/src/Porter.php',
 );

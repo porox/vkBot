@@ -8,6 +8,11 @@ $baseDir = dirname($vendorDir);
 return array(
     'c964ee0ededf28c96ebd9db5099ef910' => $vendorDir . '/guzzlehttp/promises/src/functions_include.php',
     'a0edc8309cc5e1d60e3047b5df6b7052' => $vendorDir . '/guzzlehttp/psr7/src/functions_include.php',
+    '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => $vendorDir . '/symfony/polyfill-mbstring/bootstrap.php',
     '37a3dc5111fe8f707ab4c132ef1dbc62' => $vendorDir . '/guzzlehttp/guzzle/src/functions_include.php',
+    '7d8c19660fc7bda7e3f1bb627c20c455' => $vendorDir . '/yooper/stop-words/src/StopWordFactory.php',
+    '82b15671fa4352bd2c1ea8902d4c0c5d' => $vendorDir . '/yooper/php-text-analysis/src/helpers/storage.php',
+    'c2fe535f6d51f069823351f60bd6b280' => $vendorDir . '/yooper/php-text-analysis/src/helpers/print.php',
+    '34faac671c44560451a381662d8b697c' => $vendorDir . '/yooper/php-text-analysis/src/helpers/simplified.php',
     'd64a81d7db4c397f50894b2e5cd69a72' => $baseDir . '/App.php',
 );

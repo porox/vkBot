@@ -8,6 +8,12 @@ $baseDir = dirname($vendorDir);
 return array(
     'lib\\' => array($baseDir . '/lib'),
     'getjump\\Vk\\' => array($vendorDir . '/getjump/vk/src/getjump/Vk'),
+    'Wamania\\Snowball\\' => array($vendorDir . '/wamania/php-stemmer/src'),
+    'TextAnalysis\\' => array($vendorDir . '/yooper/php-text-analysis/src'),
+    'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
+    'Symfony\\Component\\Debug\\' => array($vendorDir . '/symfony/debug'),
+    'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'Posts\\' => array($baseDir . '/Posts'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
