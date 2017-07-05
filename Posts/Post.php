@@ -97,9 +97,9 @@ class Post
 	{
 		$db = App::get()->getPDOConnection();
 		
-		$obj = $db->prepare("SELECT * FORM sendedPosts WHERE id_group = " . $groupId . " hash = '" . $this->getHash() . "' FOR UPDATE");
-		
-		return empty($obj->fetchAll()) ? false : true;
+		$obj  = $db->prepare("SELECT * FROM sendedPosts WHERE id_group = " . $groupId . " AND hash = '" . $this->getHash() . "' FOR UPDATE");
+		$obj->execute();
+		return  empty($obj->fetchAll()) ? false : true;
 	}
 	
 	public function markAsProcessed($groupId = 1)

@@ -95,5 +95,5 @@ class PostsFromSerch extends Scheduler
 
 //start once in 30 min
 (new PostsFromSerch(['debug'      => 0,
-					 'loop_delay' => 30 * 60 //39 min
+					 'loop_delay' => 1 * 60 //30 min
 ]))->foreverLoop();
