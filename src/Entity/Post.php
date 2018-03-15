@@ -11,16 +11,9 @@ class Post
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=32)
      */
-    private $id;
-    
-    /**
-     *
-     * @ORM\Column(type="string", length=150 )
-     */
-    private $groupId;
+	private $hash;
     
     /**
      *
@@ -28,44 +21,16 @@ class Post
      */
     private $postData;
     
-    /**
-     *
-     * @ORM\Column(type="string", length=32)
-     */
-    private $hash;
+	/**
+	 * @ORM\Column(type="boolean", nullable=true)
+	 */
+    private $published;
     
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-    
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-    
-    /**
-     * @return mixed
-     */
-    public function getGroupId()
-    {
-        return $this->groupId;
-    }
-    
-    /**
-     * @param mixed $groupId
-     */
-    public function setGroupId($groupId)
-    {
-        $this->groupId = $groupId;
-    }
-    
+	/**
+	 * @ORM\Column(type="string", nullable=true)
+	 */
+	private $tag;
+	
     /**
      * @return mixed
      */
@@ -97,6 +62,38 @@ class Post
     {
         $this->hash = $hash;
     }
+	
+	/**
+	 * @return mixed
+	 */
+	public function getPublished()
+	{
+		return $this->published;
+	}
+	
+	/**
+	 * @param mixed $published
+	 */
+	public function setPublished($published)
+	{
+		$this->published = $published;
+	}
+	
+	/**
+	 * @return mixed
+	 */
+	public function getTag()
+	{
+		return $this->tag;
+	}
+	
+	/**
+	 * @param mixed $tag
+	 */
+	public function setTag($tag)
+	{
+		$this->tag = $tag;
+	}
     
     
 }

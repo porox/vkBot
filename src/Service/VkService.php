@@ -14,55 +14,32 @@ use getjump\Vk\Core as VkApi;
 
 class VkService
 {
-    private $clientId;
     private $clientSecret;
-    private $login;
-    private $password;
+    private $apiVersion;
     private $token = null;
     private $vkInstanse = null;
     
-    public function __construct($clientId,$clientSecret,$login,$password)
+    public function __construct(string  $clientId,string $clientSecret,$apiVersion='5.65')
     {
         $this->clientId = $clientId;
+        $this->apiVersion = $apiVersion;
         $this->clientSecret = $clientSecret;
-        $this->login = $login;
-        $this->password = $password;
-    
-    }
-    
-    private function getVkAccessToken()
-    {
-        if (is_null($this->token))
-        {
-            $client      = new Client();
-            $res         = $client->request("GET", 'https://oauth.vk.com/token', [
-                RequestOptions::QUERY => [
-                    'grant_type'    => 'password',
-                    'client_id'     => $this->clientId,
-                    'client_secret' => $this->clientSecret,
-                    'username'      => $this->login,
-                    'password'      => $this->password
-                ]
-            ])->getBody();
-            $res         = json_decode($res, true);
-            $this->token = $res['access_token'];
-        }
-        
-        
-        return $this->token;
-    }
+	}
     
     /**
      * @return VkApi|null
      */
-    public function getVkInstanse()
+    public function getVkInstanse($token)
     {
-        if (is_null($this->vkInstanse))
-        {
-            $token            = $this->getVkAccessToken();
-            $this->vkInstanse = VkApi::getInstance()->apiVersion('5.65')->setToken($token);
-        }
-        
+    	if (is_null($token))
+		{
+			throw new \Exception('Передан пустой token');
+		}
+    	if ($token != $this->token)
+		{
+			$this->token = $token;
+			$this->vkInstanse = VkApi::getInstance()->apiVersion($this->apiVersion)->setToken($this->token);
+		}
         return $this->vkInstanse;
     }
     
