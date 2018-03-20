@@ -25,9 +25,10 @@ class Post
 	 * @ORM\Column(type="boolean", nullable=true)
 	 */
     private $published;
-    
+	
 	/**
-	 * @ORM\Column(type="string", nullable=true)
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Tags", inversedBy="posts")
+	 * @ORM\JoinColumn(referencedColumnName="id")
 	 */
 	private $tag;
 	
@@ -94,6 +95,11 @@ class Post
 	{
 		$this->tag = $tag;
 	}
-    
-    
+	
+	public function __toString()
+	{
+		return $this->getHash();
+	}
+	
+	
 }

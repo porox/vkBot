@@ -21,13 +21,18 @@ class WatchingGroups
 	 * @var
 	 */
     private $shortName;
-    
+	
 	/**
-	 * @ORM\Column(type="string")
-	 * @var
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Tags", inversedBy="watchingGroups")
+	 * @ORM\JoinColumn(referencedColumnName="id")
 	 */
     private $tag;
 	
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="watchingGroups")
+	 * @ORM\JoinColumn(referencedColumnName="id")
+	 */
+	private $userId;
 	/**
 	 * @return mixed
 	 */
@@ -75,6 +80,27 @@ class WatchingGroups
 	{
 		$this->tag = $tag;
 	}
-
- 
+	
+	/**
+	 * @return mixed
+	 */
+	public function getUserId()
+	{
+		return $this->userId;
+	}
+	
+	/**
+	 * @param mixed $userId
+	 */
+	public function setUserId($userId)
+	{
+		$this->userId = $userId;
+	}
+	
+	public function __toString()
+	{
+		return $this->getShortName();
+	}
+	
+	
 }
