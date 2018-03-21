@@ -82,12 +82,11 @@ class AppPublishPostsCommand extends Command
 	private function publishPost($vk, $groupId, Post $post, $timestamp = 0)
 	{
 		$postData = json_decode($post->getPostData(), true);
-		
 		$params = [
 			'owner_id'     => '-' . $groupId,
 			'friends_only' => 0,
 			'from_group'   => 1,
-			'message'      => $postData['text'] ?? "",
+			'message'      => $postData['message'] ?? "",
 			'attachments'  => $postData['attachments'] ?? "",
 			'services'     => "",
 			'signed'       => 0,
@@ -101,7 +100,7 @@ class AppPublishPostsCommand extends Command
 		];
 		try
 		{
-			$tmp = $vk->request('wall.post', $params)->getResponse();
+			//$tmp = $vk->request('wall.post', $params)->getResponse();
 		} catch (\Exception $e)
 		{
 		
