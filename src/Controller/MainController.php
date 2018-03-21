@@ -13,10 +13,20 @@ use GuzzleHttp\RequestOptions;
 class MainController extends Controller
 {
     /**
-     * @Route("/auth/by/{user}/{password}", name="main")
+     * @Route("/auth/by/login", name="login", methods={"GET"})
+     *
      */
-    public function authByLoginPassword($user, $password)
+    public function authByLoginPasswordGet()
     {
+     return $this->render('base.html.twig');
+    }
+    /**
+     * @Route("/auth/by/login", name="main", methods={"POST"})
+     */
+    public function authByLoginPassword(Request $request)
+    {
+        $user = $request->get('user');
+        $password = $request->get('password');
 		$client      = new Client();
 		$res         = $client->request("GET", 'https://oauth.vk.com/token', [
 			RequestOptions::QUERY => [
