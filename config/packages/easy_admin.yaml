@@ -13,4 +13,4 @@ easy_admin:
           - { entity: 'User'}
           - { entity: 'UserGroups'}
           - { entity: 'Tags'}
-          - { label: 'auth', url: '', icon: 'home', target: '_blank' }
+          - { label: 'Auth by login', url: '/auth/by/login', target: '_blank' }
