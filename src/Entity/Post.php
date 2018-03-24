@@ -22,12 +22,12 @@ class Post
     private $postData;
     
 	/**
-	 * @ORM\Column(type="boolean", nullable=true)
+	 * @ORM\Column(type="boolean",options={"default" = false})
 	 */
-    private $published;
+    private $published = false;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="App\Entity\Tags", inversedBy="posts")
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Tags", inversedBy="posts" , cascade={"all"})
 	 * @ORM\JoinColumn(referencedColumnName="id")
 	 */
 	private $tag;

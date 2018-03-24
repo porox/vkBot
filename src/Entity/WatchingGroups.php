@@ -66,7 +66,7 @@ class WatchingGroups
 	}
 	
 	/**
-	 * @return mixed
+	 * @return Tags
 	 */
 	public function getTag()
 	{

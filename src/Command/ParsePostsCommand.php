@@ -5,7 +5,10 @@ namespace App\Command;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Entity\WatchingGroups;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,21 +35,25 @@ class ParsePostsCommand extends Command
 	 */
 	protected $vkService;
 	/**
-	 * @var EntityManagerInterface
+	 * @var EntityManager
 	 */
 	protected $em;
 	
+	protected $logger;
+	
+	protected $registry;
 	
 	/**
 	 * ParsePostsCommand constructor.
 	 *
-	 * @param VkService              $vkService
-	 * @param EntityManagerInterface $em
+	 * @param VkService $vkService
 	 */
-	public function __construct(VkService $vkService, EntityManagerInterface $em)
+	public function __construct(VkService $vkService, RegistryInterface $registry, LoggerInterface $log)
 	{
+		$this->registry  = $registry;
 		$this->vkService = $vkService;
-		$this->em        = $em;
+		$this->em        = $this->registry->getEntityManager();
+		$this->logger    = $log;
 		parent::__construct(null);
 	}
 	
@@ -64,13 +71,13 @@ class ParsePostsCommand extends Command
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$io    = new SymfonyStyle($input, $output);
+		$io = new SymfonyStyle($input, $output);
 		
-		$users =$this->em->getRepository(User::class)->findAll();
-		foreach ($users as $user )
+		$users = $this->em->getRepository(User::class)->findAll();
+		foreach ($users as $user)
 		{
 			$io->writeln('Пользователь с id: ' . $user->getVkUserId());
-			$vk    = $this->vkService->getVkInstanse($user->getToken());
+			$vk             = $this->vkService->getVkInstanse($user->getToken());
 			$watchingGroups = $user->getWatchingGroups();
 			/**
 			 * @var WatchingGroups $group
@@ -97,20 +104,21 @@ class ParsePostsCommand extends Command
 						$postEntity->setPostData(json_encode($res));
 						$postEntity->setTag($group->getTag());
 						$postEntity->setHash(md5(json_encode($res)));
-						$postEntity->setPublished(false);
-						$this->em->persist($postEntity);
+						$this->em->merge($postEntity);
 						$this->em->flush();
 						$io->progressAdvance();
 					} catch (\Exception $e)
 					{
-						$this->em = $this->em->create($this->em->getConnection(), $this->em->getConfiguration());
-						//$io->error('error');
+						$this->em->clear();
+						$this->em = $this->registry->resetManager();
+						$this->logger->error($e->getMessage() . " file : " . $e->getFile() . " line: " . $e->getLine());
 					}
 					
 				}
 				
 				
 				$io->progressFinish();
+				sleep(rand(2, 5));
 			}
 		}
 		
@@ -136,10 +144,6 @@ class ParsePostsCommand extends Command
 			{
 				$attachment[$type] = (array) $attachment[$type];
 				$result            .= $type . $attachment[$type]['owner_id'] . "_" . $attachment[$type]['id'] . ",";
-				if (!isset($attachment[$type]['owner_id']))
-				{
-					//var_dump($attachment);
-				}
 			}
 			
 		}
