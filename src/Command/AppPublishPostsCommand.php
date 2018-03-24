@@ -100,7 +100,7 @@ class AppPublishPostsCommand extends Command
 		];
 		try
 		{
-			//$tmp = $vk->request('wall.post', $params)->getResponse();
+			$tmp = $vk->request('wall.post', $params)->getResponse();
 		} catch (\Exception $e)
 		{
 		

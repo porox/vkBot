@@ -1,12 +1,8 @@
-<html>
-<head></head>
-<body>
-<center>
+{% extends "@EasyAdmin/default/layout.html.twig" %}
+{% block main %}
     <form method="post" action="/auth/by/login">
         Username: <input type="text" name="user" value=""><br>
         Password: <input type="password" name="password"><br>
         <input type="submit" value="Log In">
     </form>
-</center>
-</body>
-</html>
+{% endblock %}
