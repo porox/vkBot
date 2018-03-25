@@ -66,12 +66,23 @@ class AppPublishPostsCommand extends Command
 				$io->progressStart(count($posts));
 				foreach ($posts as $post)
 				{
-					$this->publishPost($vk, $group->getGroupId(), $post, $dateTime->getTimestamp());
-					$post->setPublished(true);
-					$this->em->merge($post);
-					$this->em->flush();
-					$io->progressAdvance();
-					$dateTime->add(new \DateInterval('PT' . rand(5, 58).'M'));
+					try
+					{
+						$this->publishPost($vk, $group->getGroupId(), $post, $dateTime->getTimestamp());
+						$post->setPublished(true);
+						$this->em->merge($post);
+						$this->em->flush();
+						$io->progressAdvance();
+						$dateTime->add(new \DateInterval('PT' . rand(5, 58) . 'M'));
+					} catch (\Exception $e)
+					{
+						$this->em->clear();
+					}
+					finally
+					{
+						sleep(rand(1, 2));
+					}
+					
 				}
 			}
 			
@@ -82,7 +93,7 @@ class AppPublishPostsCommand extends Command
 	private function publishPost($vk, $groupId, Post $post, $timestamp = 0)
 	{
 		$postData = json_decode($post->getPostData(), true);
-		$params = [
+		$params   = [
 			'owner_id'     => '-' . $groupId,
 			'friends_only' => 0,
 			'from_group'   => 1,
@@ -98,14 +109,9 @@ class AppPublishPostsCommand extends Command
 			//'guid'                 => ,
 			'mark_as_ads'  => 0,
 		];
-		try
-		{
-			$tmp = $vk->request('wall.post', $params)->getResponse();
-		} catch (\Exception $e)
-		{
 		
-		}
-		sleep(rand(1, 2));
+		$tmp = $vk->request('wall.post', $params)->getResponse();
+		
 	}
 }
 
