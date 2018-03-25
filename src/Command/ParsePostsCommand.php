@@ -92,21 +92,29 @@ class ParsePostsCommand extends Command
 					'count'    => self::postPerGroup
 				])->getResponse();
 				$io->progressStart(count($posts));
+				$postsRepo = $this->em->getRepository(Post::class);
 				foreach ($posts as $post)
 				{
 					try
 					{
+						
 						$res        = [
 							'message'     => $post->text ? $post->text : "",
 							'attachments' => isset($post->attachments) ? $this->parseAttach($post->attachments) : ""
 						];
-						$postEntity = new Post();
-						$postEntity->setPostData(json_encode($res));
-						$postEntity->setTag($group->getTag());
-						$postEntity->setHash(md5(json_encode($res)));
-						$this->em->merge($postEntity);
-						$this->em->flush();
-						$io->progressAdvance();
+						$postExist =$postsRepo->find(md5(json_encode($res)));
+						if (!$postExist)
+						{
+							$postEntity = new Post();
+							$postEntity->setPostData(json_encode($res));
+							$postEntity->setTag($group->getTag());
+							$postEntity->setHash(md5(json_encode($res)));
+							$postEntity->setPublished(true);
+							$this->em->merge($postEntity);
+							$this->em->flush();
+							$io->progressAdvance();
+						}
+						
 					} catch (\Exception $e)
 					{
 						$this->em->clear();
