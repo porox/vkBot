@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Service\VkService;
+use getjump\Vk\Core as VkApi;
 
 class AppPublishPostsCommand extends Command
 {
@@ -29,11 +30,13 @@ class AppPublishPostsCommand extends Command
 	 */
 	protected $em;
 	
-	public function __construct(VkService $vkService, EntityManagerInterface $em)
+	protected $logger;
+	
+	public function __construct(VkService $vkService, EntityManagerInterface $em, LoggerInterface $log)
 	{
 		$this->vkService = $vkService;
 		$this->em        = $em;
-		
+		$this->logger = $log;
 		parent::__construct(null);
 	}
 	
@@ -56,7 +59,7 @@ class AppPublishPostsCommand extends Command
 			foreach ($groups as $group)
 			{
 				$dateTime = new \DateTime('now');
-				
+				$dateTime->add(new \DateInterval('PT' . rand(5, 58) . 'M'));
 				$posts = $this->em->getRepository(Post::class)->findBy([
 					'published' => false,
 					'tag'       => $group->getTag()
@@ -77,6 +80,7 @@ class AppPublishPostsCommand extends Command
 					} catch (\Exception $e)
 					{
 						$this->em->clear();
+						$this->logger->error($e->getMessage() . " file : " . $e->getFile() . " line: " . $e->getLine());
 					}
 					finally
 					{
@@ -90,7 +94,7 @@ class AppPublishPostsCommand extends Command
 	}
 	
 	
-	private function publishPost($vk, $groupId, Post $post, $timestamp = 0)
+	private function publishPost(VkApi $vk, $groupId, Post $post, $timestamp = 0)
 	{
 		$postData = json_decode($post->getPostData(), true);
 		$params   = [
@@ -110,7 +114,7 @@ class AppPublishPostsCommand extends Command
 			'mark_as_ads'  => 0,
 		];
 		
-		$tmp = $vk->request('wall.post', $params)->getResponse();
+		return $vk->request('wall.post', $params)->getResponse();
 		
 	}
 }
