@@ -109,7 +109,7 @@ class ParsePostsCommand extends Command
 							$postEntity->setPostData(json_encode($res));
 							$postEntity->setTag($group->getTag());
 							$postEntity->setHash(md5(json_encode($res)));
-							$postEntity->setPublished(true);
+							$postEntity->setPublished(false);
 							$this->em->merge($postEntity);
 							$this->em->flush();
 							$io->progressAdvance();
