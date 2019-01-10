@@ -1,0 +1,16 @@
+easy_admin:
+    entities:
+#        # List the entity class name you want to manage
+         Post : {class: App\Entity\Post}
+         WatchingGroups : {class: App\Entity\WatchingGroups}
+         User : {class: App\Entity\User}
+         UserGroups : {class: App\Entity\UserGroups}
+         Tags : {class: App\Entity\Tags}
+    design:
+        menu:
+          - { entity: 'Post'}
+          - { entity: 'WatchingGroups'}
+          - { entity: 'User'}
+          - { entity: 'UserGroups'}
+          - { entity: 'Tags'}
+          - { label: 'Auth by login', url: '/auth/by/login', target: '_blank' }
