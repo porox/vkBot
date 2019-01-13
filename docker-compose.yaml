@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+    app:
+        networks:
+            default:
+                aliases:
+                    - vkbot.local
+        build:
+            context: ./
+            dockerfile: docker/Dockerfile
+            args:
+              APP_ENV: ${APP_ENV}
+
+        env_file:
+            - .env
+        container_name: app-vk
+        ports:
+            - "80:80"
+        volumes:
+            - ./:/var/www/html

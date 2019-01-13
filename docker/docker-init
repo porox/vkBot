@@ -1,0 +1,45 @@
+#!/bin/sh
+set -eo pipefail
+
+# check every $TIMEOUT seconds
+TIMEOUT=10
+# check every $TIMEOUT seconds
+GRACE_TIMEOUT=3
+
+
+function check_process() {
+    if ! kill -s 0 $1; then
+        wait $1
+        CODE=$?
+        echo "[docker-init] PID $1 terminated with code $CODE.";
+        exit $CODE;
+    fi
+}
+
+# Start php-fpm
+/usr/local/sbin/php-fpm -F &
+PHP_FPM_PID=$!
+
+echo "[docker-init] php-fpm is running as PID $PHP_FPM_PID.";
+check_process $PHP_FPM_PID
+
+# Start nginx
+/usr/sbin/nginx -g 'daemon off;' &
+NGINX_PID=$!
+
+echo "[docker-init] nginx is running as PID $NGINX_PID.";
+check_process $NGINX_PID
+
+
+# ctrl-c / KeyboardInterrupt
+trap "echo '[docker-init] KeyboardInterrupt, going down';kill -SIGINT $PHP_FPM_PID $NGINX_PID; wait;" SIGINT
+# sigterm, kill -15
+trap "echo '[docker-init] Termination, going down';kill -SIGTERM $PHP_FPM_PID $NGINX_PID; wait;" SIGTERM
+# this script terminated
+trap "echo '[docker-init] Done, going down';kill -SIGINT $PHP_FPM_PID $NGINX_PID; sleep $GRACE_TIMEOUT;echo \"[docker-init] $GRACE_TIMEOUT timeout, going down for real.\";kill -SIGTERM $PHP_FPM_PID $NGINX_PID; wait;"  EXIT
+
+while /bin/true; do
+  check_process $PHP_FPM_PID
+  check_process $NGINX_PID
+  sleep $TIMEOUT
+done

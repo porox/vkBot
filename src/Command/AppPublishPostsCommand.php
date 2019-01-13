@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Service\VkService;
 use getjump\Vk\Core as VkApi;
+use Symfony\Component\VarDumper\VarDumper;
 
 class AppPublishPostsCommand extends Command
 {
@@ -49,6 +50,7 @@ class AppPublishPostsCommand extends Command
 	{
 		$io    = new SymfonyStyle($input, $output);
 		$users = $this->em->getRepository(User::class)->findAll();
+
 		foreach ($users as $user)
 		{
 			$vk     = $this->vkService->getVkInstanse($user->getToken());
@@ -58,7 +60,7 @@ class AppPublishPostsCommand extends Command
 			 */
 			foreach ($groups as $group)
 			{
-				$dateTime = new \DateTime('now');
+				$dateTime = new \DateTime();
 				$dateTime->add(new \DateInterval('PT' . rand(5, 58) . 'M'));
 				$posts = $this->em->getRepository(Post::class)->findBy([
 					'published' => false,
@@ -79,6 +81,12 @@ class AppPublishPostsCommand extends Command
 						$dateTime->add(new \DateInterval('PT' . rand(5, 58) . 'M'));
 					} catch (\Exception $e)
 					{
+                        //VarDumper::dump($e);
+					    //if ($e->getCode() == 214 && $e->getMessage() === 'Access to adding post denied: can only
+                        // schedule 25 posts on a day' ){
+					      //  VarDumper::dump($e);
+					        //continue 2;
+                        //}
 						$this->em->clear();
 						$this->logger->error($e->getMessage() . " file : " . $e->getFile() . " line: " . $e->getLine());
 					}
